@@ -1,0 +1,163 @@
+#Even though default configuration files are generated during installation, 
+#custom conf files give you customization, control, consistency and automation
+#When using Docker and Docker Compose, having configuration files ensures 
+#that your services are automatically configured correctly when containers are started, 
+#which is essential for reliable and repeatable deployments.
+
+# This is a MySQL/MariaDB configuration file that defines various settings and parameters for the MariaDB server.
+
+# These groups are read by MariaDB server.
+# Use it for options that only the server (but not clients) should see
+#
+# See the examples of server my.cnf files in /usr/share/mysql/
+#
+
+# this is read by the standalone daemon and embedded servers
+[server]
+
+#Daemon is a background process that runs continuously, often without direct interaction with the user. 
+#Daemons are typically initiated as system services or processes during the boot-up process of an operating system and continue to operate until the system is shut down.
+
+# this is only for the mysqld standalone daemon
+[mysqld]
+
+#
+# * Basic Settings
+#
+# these setting ensure the proper operation, performance and security of the DB server
+user		= mysql
+# path to the PID file for the running MariaDB server process
+pid-file	= /run/mysqld/mysqld.pid
+# defines the Unix socket file used for the local client-server communication (inside a network)
+# enables a secure communication between the MariaDB clients and the server running on the same host without involving a network itself
+# this can provide faster and more secure communication compared to network-based connections
+socket		= /run/mysqld/mysqld.sock
+# specifies the TCP/IP (logical endpoint for communication in a network) port number on which the server listens for client connections
+port		= 3306
+# base directory where MariaDB binaries and libraries are located
+basedir		= /usr
+# directory where MariaDB stores its database
+datadir		= /var/lib/mysql
+# directory used for temporary files
+tmpdir		= /tmp
+# directory containing language-specific error message files
+lc-messages-dir	= /usr/share/mysql
+# if uncommented, is used to disable external locking; unrecommended to enable it
+# skip-external-locking
+
+# Instead of skip-networking the default is now to listen only on
+# localhost which is more compatible and is not less secure.
+# bind-address		= 127.0.0.1
+
+#
+# * Fine Tuning
+#
+# key_buffer_size		= 16M
+# max_allowed_packet	= 16M
+# thread_stack		= 192K
+# thread_cache_size       = 8
+# This replaces the startup script and checks MyISAM tables if needed
+# the first time they are touched
+# this means that the DB server should attempt to perform automatic backup and repair operations to tabled that were left in an inconsistent state due to abnormal shutdown or crash
+myisam_recover_options  = BACKUP
+#max_connections        = 100
+#table_cache            = 64
+#thread_concurrency     = 10
+
+#
+# * Query Cache Configuration
+#
+# query_cache_limit	= 1M
+# specifies the size of the query cache for the SELECT queries
+query_cache_size        = 16M
+
+#
+# * Logging and Replication
+#
+# Both location gets rotated by the cronjob.
+# Be aware that this log type is a performance killer.
+# As of 5.1 you can enable the log at runtime!
+#general_log_file        = /var/log/mysql/mysql.log
+#general_log             = 1
+#
+# Error log - should be very few entries.
+#
+# this parameter specifies the location where errors encountered by the DB server are logged
+log_error = /var/log/mysql/error.log
+#
+# Enable the slow query log to see queries with especially long duration
+#slow_query_log_file	= /var/log/mysql/mariadb-slow.log
+#long_query_time = 10
+#log_slow_rate_limit	= 1000
+#log_slow_verbosity	= query_plan
+#log-queries-not-using-indexes
+#
+# The following can be used as easy to replay backup logs or for replication.
+# note: if you are setting up a replication slave, see README.Debian about
+#       other settings you may need to change.
+#server-id		= 1
+#log_bin			= /var/log/mysql/mysql-bin.log
+# specifies how long binary log files should be retained before being automatically deleted
+expire_logs_days	= 10
+#max_binlog_size   = 100M
+#binlog_do_db		= include_database_name
+#binlog_ignore_db	= exclude_database_name
+
+#
+# * InnoDB
+#
+# InnoDB is enabled by default with a 10MB datafile in /var/lib/mysql/.
+# Read the manual for more InnoDB related options. There are many!
+
+#
+# * Security Features
+#
+# Read the manual, too, if you want chroot!
+# chroot = /var/lib/mysql/
+#
+# For generating SSL certificates you can use for example the GUI tool "tinyca".
+#
+# ssl-ca=/etc/mysql/cacert.pem
+# ssl-cert=/etc/mysql/server-cert.pem
+# ssl-key=/etc/mysql/server-key.pem
+#
+# Accept only connections using the latest and most secure TLS protocol version.
+# ..when MariaDB is compiled with OpenSSL:
+# ssl-cipher=TLSv1.2
+# ..when MariaDB is compiled with YaSSL (default in Debian):
+# ssl=on
+
+#
+# * Character sets
+#
+# MySQL/MariaDB default is Latin1, but in Debian we rather default to the full
+# utf8 4-byte character set. See also client.cnf
+#
+# this section defines how data is stored and sorted within the database
+# defines the character set encoding used for storing data in the database server; 
+# utf8mb4 is a Unicode character set that supports a wide range of characters (recommended)
+character-set-server  = utf8mb4
+# defines how data is sorted and compared within the DB server; utf8mb4... is a collation that is case-insensitive (ci), so it treats uppercase and lowercase letter as equivalent
+collation-server      = utf8mb4_general_ci
+
+#
+# * Unix socket authentication plugin is built-in since 10.0.22-6
+#
+# Needed so the root database user can authenticate without a password but
+# only when running as the unix root user.
+#
+# Also available for other users if required.
+# See https://mariadb.com/kb/en/unix_socket-authentication-plugin/
+
+# this is only for embedded server
+[embedded]
+
+# This group is only read by MariaDB servers, not by MySQL.
+# If you use the same .cnf file for MySQL and MariaDB,
+# you can put MariaDB-only options here
+[mariadb]
+
+# This group is only read by MariaDB-10.1 servers.
+# If you use the same .cnf file for MariaDB of different versions,
+# use this group for options that older servers don't understand
+[mariadb-10.3]

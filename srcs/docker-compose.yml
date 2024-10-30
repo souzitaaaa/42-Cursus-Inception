@@ -1,0 +1,77 @@
+#*  Defines the different services that Docker will manage
+services:
+  #?  NGINX container
+  nginx:
+    #*  Custom name for the container isntead of a generated one 
+    container_name: nginx
+    #*  Tells the docker compose to build the container image from a Dockerfile
+    #*    located in that directory
+    build: requirements/nginx/.
+    #*  Mounts a volume into the container
+    volumes:
+      - wp:/var/www/inception
+    ports:
+      - "443:443"
+    #*  Tells docker to restart the container if it exits with a error
+    restart: on-failure
+    #*  Specifies the networks that the service will join
+    networks:
+      - all
+    depends_on:
+      - wordpress
+    env_file:
+      - .env
+  
+  #? WORDPRESS container
+  wordpress:
+    container_name: wp-php
+    build: requirements/wordpress/.
+    volumes:
+      - wp:/var/www/inception/
+    restart: on-failure
+    networks:
+      - all
+    depends_on:
+      - mariadb
+    env_file:
+      - .env
+
+  #? MARIADB container
+  mariadb:
+    container_name: mariadb
+    build: requirements/mariadb/.
+    volumes:
+      - db:/var/lib/mysql
+    restart: on-failure
+    networks: 
+      - all
+    env_file:
+      - .env
+
+volumes:
+  db: 
+    name: db
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ~/data/db
+
+  wp: 
+    name: wp
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ~/data/wp
+
+networks:
+  all:
+    driver: bridge
+
+#Adicionar 2 users automaticamente na base de dados
+#Trocar o domain para "dinoguei.42.fr"
+#Trocar tudo para debian:bullseye
+#Trocar as portas de conecção dos containers, 433, 9000, 3306
+#Adicionar valores no .env
+#Meter a cena do SSL ou o caralho
