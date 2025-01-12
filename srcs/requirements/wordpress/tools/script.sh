@@ -27,4 +27,6 @@ if ! wp --allow-root --path="/var/www/inception/" user get $WP_USER ; then
         --role=$WP_ROLE
 fi;
 
+wp --allow-root --path="/var/www/inception/" theme install twentytwentyfour --activate
+
 exec $@
